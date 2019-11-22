@@ -85,7 +85,8 @@ public class Bank {
     public String toString() {
         StringBuilder bankString = new StringBuilder("The bank has ").append(accounts.size()).append(" accounts.");
         accounts.forEach((accountNumber, accountBalance) -> {
-            bankString.append("\n\tAccount ").append(accountNumber).append(": balance = ").append(accountBalance);
+            bankString.append(System.lineSeparator()).append("\tAccount ").append(accountNumber)
+            .append(": balance = ").append(accountBalance);
         });
         return bankString.toString();
     }
