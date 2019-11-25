@@ -52,11 +52,10 @@ public class BankProgramOld {
         System.out.println("Goodbye!");
     }
 
-    public int newAccount() {
+    private void newAccount() {
         current = nextAccount++;
         accounts.put(current, 0);
         System.out.println("Your new account number is " + current);
-        return current;
     }
 
     private void select() {
@@ -66,7 +65,7 @@ public class BankProgramOld {
         System.out.println("The balance of account " + current + " is " + balance);
     }
 
-    public void deposit() {
+    private void deposit() {
         System.out.print("Enter deposit amount: ");
         int amount = scanner.nextInt();
         int balance = accounts.get(current);
