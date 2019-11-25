@@ -10,7 +10,7 @@ public class Bank {
 
     /**
      * Key: Represents the account number.
-     * Value: Represents the balance.
+     * Value: Represents the account.
      */
     private HashMap<Integer, BankAccount> accounts;
 
