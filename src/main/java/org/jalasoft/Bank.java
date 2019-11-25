@@ -1,6 +1,7 @@
 package org.jalasoft;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 /**
  * Bank
@@ -30,8 +31,18 @@ public class Bank {
      * TO DO: Add support for foreign accounts.
      */
     public int newAccount() {
+        return newAccount(AccountOrigin.LOCAL);
+    }
+
+    /**
+     * Creates a new account and assigns it an acocunt number and sets the balance to 0.
+     * 
+     * @param accountOrigin - Represents where the account was created.
+     * @return The account number.
+     */
+    public int newAccount(final AccountOrigin accountOrigin) {
         int currentAccount = nextAccount++;
-        BankAccount bankAccount = new BankAccount(currentAccount, AccountOrigin.LOCAL);
+        BankAccount bankAccount = new BankAccount(currentAccount, accountOrigin);
         accounts.put(currentAccount, bankAccount);    
         return currentAccount;
     }
@@ -42,11 +53,16 @@ public class Bank {
      * 
      * TO DO: Analyse NullObjectPattern to avoid nulls
      * 
-     * @param accountNumber the account number to find the BankAccountInstance
+     * @param accountNumber the account number to find the BankAccountInstance.
+     * @throw IllegalStateException 
      * @return a instance of BankAccount
      */
-    public BankAccount getBankAccount(final int accountNumber) {
-        return accounts.get(accountNumber);
+    public BankAccount getBankAccount(final int accountNumber) throws IllegalStateException {
+        BankAccount account = accounts.get(accountNumber);
+        if (Objects.isNull(account)) {
+            throw new IllegalStateException("The account number is not registered");
+        } 
+        return account;
     }
 
     /**
@@ -68,10 +84,10 @@ public class Bank {
     public String toString() {
         StringBuilder bankString = new StringBuilder("The bank has ")
         .append(accounts.size()).append(" accounts.");
-        accounts.forEach((accountNumber, accountBalance) -> {
+        accounts.forEach((accountNumber, account) -> {
             bankString.append(System.lineSeparator())
             .append("\tAccount ").append(accountNumber)
-            .append(": balance = ").append(accountBalance);
+            .append(": balance = ").append(account.getBalance());
         });
         return bankString.toString();
     }  

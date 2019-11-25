@@ -11,7 +11,7 @@ public class BankAccount {
 
  
     /**
-     * Cosntructor of BankAccount.
+     * Constructor of BankAccount.
      * 
      * @param accountNumber the unique identifier for a bank account.
      * @param AccountOrigin represent where the account was created.
@@ -56,6 +56,9 @@ public class BankAccount {
      * @return true if the deposit was successful, false otherwise.
      */
     public boolean deposit(final int amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("The deposit amount must be grater than 0.");
+        }
         balance += amount; 
         return true;
     }
@@ -92,12 +95,12 @@ public class BankAccount {
      * - change the restriction for loan
      * - etc
      * 
-     * @param AccountOrigin the new account origin to change, it will decide how the restriction or facilities will change
+     * @param accountOrigin the new account origin to change, it will decide how the restriction or facilities will change
      * @return
      * 
      * DO NOT IMPLEMENT IT: STILL IN DESIGN
      */
-    public boolean changeAccount(final AccountOrigin AccountOrigin) {
+    public boolean changeAccount(final AccountOrigin accountOrigin) {
         return false;
     }
 }

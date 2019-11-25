@@ -95,7 +95,7 @@ public class BankClient {
     }
 
     private void showAll() {
-        System.out.println(bankServices.toString());
+        System.out.println(bankServices.getBankInformation());
     }
 
     private void addInterest() {
