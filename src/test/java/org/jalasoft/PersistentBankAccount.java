@@ -11,19 +11,21 @@ import org.junit.jupiter.params.provider.CsvSource;
  */
 public class PersistentBankAccount {
 
+    private static int initialAmount = 2000;
     private static BankAccount bankAccount;
     
     @BeforeAll
-    public static void beforeAll() {
+    static void beforeAll() {
         bankAccount = new BankAccount(0, AccountOrigin.FOREIGN);
+        bankAccount.deposit(initialAmount);
     }
 
     @ParameterizedTest
     @CsvSource({
-        "100, 100",
-        "40, 140",
-        "10, 150",
-        "200, 350"
+        "100, 2100",
+        "40, 2140",
+        "10, 2150",
+        "200, 2350"
     })
     public void multipleDepositActionsToAccount(final int amountToDeposit, final int expectedBalanceAfterDeposit) {
        
@@ -31,6 +33,18 @@ public class PersistentBankAccount {
         bankAccount.deposit(amountToDeposit);
 
         // Assert
+        assertEquals(expectedBalanceAfterDeposit, bankAccount.getBalance());
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "100, 1900",
+        " 40, 1860",
+        " 10, 1850",
+        "200, 1650"
+    })
+    public void multipleWithdrawActionsToAccount(int amountToDeposit, int expectedBalanceAfterDeposit) {
+        bankAccount.withdraw(amountToDeposit);
         assertEquals(expectedBalanceAfterDeposit, bankAccount.getBalance());
     }
 }
