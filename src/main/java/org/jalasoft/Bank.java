@@ -1,6 +1,7 @@
 package org.jalasoft;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 /**
  * Bank
@@ -8,11 +9,12 @@ import java.util.HashMap;
 public class Bank {
 
     /**
-     * Map that contains the information of teh accounts.
-     * Key: Account Number.
-     * Value: Account Balance.
+     * Key: Represents the account number.
+     * Value: Represents the account.
      */
-    private HashMap<Integer, Integer> accounts;
+    private HashMap<Integer, BankAccount> accounts;
+
+
     private int nextAccount;
     private double interestRate;
 
@@ -21,72 +23,72 @@ public class Bank {
         nextAccount = 0;
         interestRate = 0.01;
     }
-    
+
     /**
      * Creates a new account and assign it an account number and sets the balance to 0.
      * 
-     * @return the account number.
+     * @return The account number.
+     * TO DO: Add support for foreign accounts.
      */
     public int newAccount() {
+        return newAccount(AccountOrigin.LOCAL);
+    }
+
+    /**
+     * Creates a new account and assigns it an acocunt number and sets the balance to 0.
+     * 
+     * @param accountOrigin - Represents where the account was created.
+     * @return The account number.
+     */
+    public int newAccount(final AccountOrigin accountOrigin) {
         int currentAccount = nextAccount++;
-        accounts.put(currentAccount, 0);
+        BankAccount bankAccount = new BankAccount(currentAccount, accountOrigin);
+        accounts.put(currentAccount, bankAccount);    
         return currentAccount;
     }
 
     /**
-     * Gets the current balance of a given account.
+     * Given an account number it will search for the BankAccount instance
+     *  - If the accountNumber does not exist it wil return 'null' 
      * 
-     * @param accountNumber the account where the balance will be checked.
-     * @return the balance of the given account.
+     * TO DO: Analyse NullObjectPattern to avoid nulls
+     * 
+     * @param accountNumber the account number to find the BankAccountInstance.
+     * @throw IllegalStateException 
+     * @return a instance of BankAccount
      */
-    public int getBalance(int accountNumber) {
-        return accounts.get(accountNumber);
+    public BankAccount getBankAccount(final int accountNumber) throws IllegalStateException {
+        BankAccount account = accounts.get(accountNumber);
+        if (Objects.isNull(account)) {
+            throw new IllegalStateException("The account number is not registered");
+        } 
+        return account;
     }
 
     /**
-     * Increases the amount of balance in a given account.
+     * This method deposit a certain amount of money to all accounts based on a
+     * interest rate
      * 
-     * @param accountNumber the account where the amount will be deposited.
-     * @param amount the amount of money that will increase the balance.
+     * @return whether the interest payment process was successful or not
      * 
-     * @return true if the transaction was executed successfully, false otherwise.
-     */
-    public boolean deposit(int accountNumber, int amount) {
-        int balance = getBalance(accountNumber);
-        accounts.put(accountNumber, balance + amount);
-        return true;
-    }
-
-    /**
-     * Verifies if the loan amount requested can be assigned to a given account based on its current balance.
-     * 
-     * @param accountNumber the account that we will verify on.
-     * @param loanAmount the requested amount to be verified.
-     * @return true if the loan was approved, false otherwise.
-     */
-    public boolean authorizeLoan(int accountNumber, int loanAmount) {
-        int balance = getBalance(accountNumber);
-        return balance >= loanAmount / 2;
-    }
-
-    /**
-     * Deposits a certain amount of money to all accounts based on a interest rate.
-     * 
-     * @return true if the interest payment process was successful, false otherwise.
+     * TO DO: Implementation is very unefficient
      */
     public boolean payInterest() {
-        accounts.forEach((accountNumber, accountBalance) -> {
-            accounts.put(accountNumber, (int) (accountBalance * (1 + interestRate)));
+        accounts.values().forEach(account -> {
+            account.deposit((int) (account.getBalance() * interestRate));
         });
         return true;
     }
 
     @Override
     public String toString() {
-        StringBuilder bankString = new StringBuilder("The bank has ").append(accounts.size()).append(" accounts.");
-        accounts.forEach((accountNumber, accountBalance) -> {
-            bankString.append("\n\tAccount ").append(accountNumber).append(": balance = ").append(accountBalance);
+        StringBuilder bankString = new StringBuilder("The bank has ")
+        .append(accounts.size()).append(" accounts.");
+        accounts.forEach((accountNumber, account) -> {
+            bankString.append(System.lineSeparator())
+            .append("\tAccount ").append(accountNumber)
+            .append(": balance = ").append(account.getBalance());
         });
         return bankString.toString();
-    }
+    }  
 }
