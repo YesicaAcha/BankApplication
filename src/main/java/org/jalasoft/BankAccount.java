@@ -55,12 +55,28 @@ public class BankAccount {
      * @param amount the amount that will be increased.
      * @return true if the deposit was successful, false otherwise.
      */
-    public boolean deposit(final int amount) {
+    public void deposit(final int amount) throws IllegalArgumentException {
         if (amount <= 0) {
             throw new IllegalArgumentException("The deposit amount must be grater than 0.");
         }
         balance += amount; 
-        return true;
+    }
+
+    /**
+     * Decreases the amount of the balance applying the following restrictions:
+     * - The amount cannot be greater than the current balance.
+     * 
+     * @param amount the amount that will be decrease.
+     */
+    public void withdraw(final int amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("The amount to withdraw must be greater than 0.");
+        }
+
+        if (amount > balance) {
+            throw new ArithmeticException("Cannot withdraw amounts greater than the actual balance: " + getBalance());
+        }
+        balance -= amount;
     }
 
     /**
@@ -72,21 +88,7 @@ public class BankAccount {
      * @return true if the amount is supported, false otherwise.
      */
     public boolean hasEnoughCollateral(final int amount) {
-        return balance >= amount / 2;
-    }
-
-    /**
-     * Decreases the amount of the balance applying the following restrictions:
-     * - The amount cannot be greater than the current balance.
-     * 
-     * @param amount the amount that will be decrease.
-     */
-    public boolean withdraw(final int amount) {
-        boolean isWithdrawAllowed = amount <= balance;
-        if (isWithdrawAllowed) {
-            balance -=amount;
-        }
-         return isWithdrawAllowed;
+        return amount > 0 && balance >= amount / 2;
     }
 
     /**

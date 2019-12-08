@@ -13,8 +13,6 @@ public class Bank {
      * Value: Represents the account.
      */
     private HashMap<Integer, BankAccount> accounts;
-
-
     private int nextAccount;
     private double interestRate;
 
@@ -28,7 +26,6 @@ public class Bank {
      * Creates a new account and assign it an account number and sets the balance to 0.
      * 
      * @return The account number.
-     * TO DO: Add support for foreign accounts.
      */
     public int newAccount() {
         return newAccount(AccountOrigin.LOCAL);
@@ -41,10 +38,9 @@ public class Bank {
      * @return The account number.
      */
     public int newAccount(final AccountOrigin accountOrigin) {
-        int currentAccount = nextAccount++;
-        BankAccount bankAccount = new BankAccount(currentAccount, accountOrigin);
-        accounts.put(currentAccount, bankAccount);    
-        return currentAccount;
+        BankAccount bankAccount = new BankAccount(nextAccount++, accountOrigin);
+        accounts.put(bankAccount.getAccountNumber(), bankAccount);    
+        return bankAccount.getAccountNumber();
     }
 
     /**
@@ -60,7 +56,7 @@ public class Bank {
     public BankAccount getBankAccount(final int accountNumber) throws IllegalStateException {
         BankAccount account = accounts.get(accountNumber);
         if (Objects.isNull(account)) {
-            throw new IllegalStateException("The account number is not registered");
+            throw new IllegalStateException("The account number is not registered.");
         } 
         return account;
     }
@@ -75,9 +71,21 @@ public class Bank {
      */
     public boolean payInterest() {
         accounts.values().forEach(account -> {
-            account.deposit((int) (account.getBalance() * interestRate));
+            int interestToPay = (int) (account.getBalance() * interestRate);
+            if (interestToPay > 0) {
+                account.deposit(interestToPay);
+            }
         });
         return true;
+    }
+
+    /**
+     * Gets the interestRate to pay the interest.
+     * 
+     * @return the interestRate which will help to calculate the interest to pay.
+     */
+    public double getInterestRate() {
+        return interestRate;
     }
 
     @Override
